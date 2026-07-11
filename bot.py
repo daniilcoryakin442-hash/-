@@ -1,7 +1,9 @@
 import asyncio
 import logging
+import os
 
 from aiogram import Bot, Dispatcher
+from aiohttp import web
 
 from config import BOT_TOKEN
 from database import init_db
@@ -9,8 +11,25 @@ from handlers import profile, settings, diet, common
 
 logging.basicConfig(level=logging.INFO)
 
+PORT = int(os.getenv("PORT", 10000))
 
-async def main():
+
+async def handle_health(request):
+    return web.Response(text="Bot is running")
+
+
+async def run_web_server():
+    """Лёгкий HTTP-сервер только для health-check от Render."""
+    app = web.Application()
+    app.router.add_get("/", handle_health)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, host="0.0.0.0", port=PORT)
+    await site.start()
+    logging.info(f"Health-check сервер запущен на порту {PORT}")
+
+
+async def run_bot():
     await init_db()
 
     bot = Bot(token=BOT_TOKEN)
@@ -25,5 +44,10 @@ async def main():
     await dp.start_polling(bot)
 
 
+async def main():
+    await asyncio.gather(run_web_server(), run_bot())
+
+
 if __name__ == "__main__":
     asyncio.run(main())
+
