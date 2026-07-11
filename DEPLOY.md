@@ -29,6 +29,7 @@ git push -u origin main
 В настройках сервиса → **Environment** добавить:
 - `BOT_TOKEN` — токен от @BotFather
 - `GEMINI_API_KEY` — ключ с aistudio.google.com
+- `PYTHON_VERSION` — `3.12.3` (обязательно! иначе Render возьмёт Python 3.14, под который ещё нет готовых пакетов, и билд упадёт с ошибкой сборки pydantic-core/maturin)
 
 ## Шаг 4. Деплой
 
