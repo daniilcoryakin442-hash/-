@@ -7,7 +7,10 @@ from aiohttp import web
 
 from config import BOT_TOKEN
 from database import init_db
-from handlers import profile, settings, diet, common
+import handler_common as common
+import handler_profile as profile
+import handler_settings as settings
+import handler_diet as diet
 
 logging.basicConfig(level=logging.INFO)
 
